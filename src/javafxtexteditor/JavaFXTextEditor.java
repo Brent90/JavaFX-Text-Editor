@@ -27,7 +27,7 @@ public class JavaFXTextEditor extends Application {
             // Read file fxml and draw interface.
             Parent root = FXMLLoader.load(getClass().getResource("Main.fxml"));
             primaryStage.setScene(new Scene(root));
-            
+           primaryStage.setHeight(500);
            
             
             primaryStage.show();

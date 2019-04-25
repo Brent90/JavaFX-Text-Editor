@@ -54,7 +54,7 @@ public class FileOperations {
     public void saveFileAs(String text) {
 
         //make file have extension of txt
-        fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("TXT Files", "*.txt"));
+        //fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("TXT Files", "*.txt"));
         file = fileChooser.showSaveDialog(null);
 
         //make sure to check file is not null so program doesn't crash if cancel is pressed
@@ -73,7 +73,6 @@ public class FileOperations {
                 myPrintWriter(text);
             }
         } else {
-            System.out.println("file does not exist");
             saveFileAs(text);
         }
 
@@ -87,6 +86,26 @@ public class FileOperations {
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
+    }
+
+    public String getFileName() {
+        return file.getName();
+    }
+
+    public StringBuilder getFile() {
+        StringBuilder stringBuilder = new StringBuilder();
+
+        try {
+            Scanner reader = new Scanner(file);
+            while (reader.hasNext()) {
+                stringBuilder.append(reader.nextLine()).append("\n");
+            }
+
+        } catch (FileNotFoundException e) {
+            System.out.println("file not loaded");
+            System.out.println(e.getMessage());
+        }
+        return stringBuilder;
     }
 
 }

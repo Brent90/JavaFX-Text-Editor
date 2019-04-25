@@ -9,11 +9,14 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -31,7 +34,8 @@ import javafx.stage.FileChooser;
 public class MainController implements Initializable {
 
     private File file;
-    private FileOperations fileOperations = new FileOperations();
+    private final FileOperations fileOperations = new FileOperations();
+    private final Map<Tab, String> tabList = new HashMap<>();
 
     @FXML
     private TextArea textArea;
@@ -44,28 +48,52 @@ public class MainController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         tabPane.setTabMinWidth(150);
+        tabPane.getSelectionModel().selectedItemProperty().addListener(c -> {
+            textArea.setText(tabList.get(tabPane.getSelectionModel().getSelectedItem()));
+        });
 
     }
 
     @FXML
-    private void createNewFile(ActionEvent event) {
-    
+    private void createNewFile() {
+        Tab tab = new Tab("new tab");
+        tabPane.getTabs().add(tab);
     }
 
     @FXML
     private void openFile(ActionEvent event) {
         textArea.setText(fileOperations.openFile().toString());
+
+        try {
+            Tab tab = new Tab(fileOperations.getFileName());
+            tabPane.getTabs().add(tab);
+            tabPane.getSelectionModel().select(tab);
+            tabList.put(tabPane.getSelectionModel().getSelectedItem(), fileOperations.getFile().toString());
+            textArea.setText(fileOperations.getFile().toString());
+        } catch (Exception e) {
+        }
+
     }
 
     @FXML
     private void saveFile() {
         fileOperations.saveFile(textArea.getText());
+        Tab tab = tabPane.getSelectionModel().getSelectedItem();
+        tab.setText(fileOperations.getFileName());
+        tabList.put(tabPane.getSelectionModel().getSelectedItem(), fileOperations.getFile().toString());
+        textArea.setText(fileOperations.getFile().toString());
 
     }
 
     @FXML
     private void saveFileAs() {
         fileOperations.saveFileAs(textArea.getText());
+        // Tab tab = new Tab(fileOperations.getFileName());
+        Tab tab = tabPane.getSelectionModel().getSelectedItem();
+        tab.setText(fileOperations.getFileName());
+        tabList.put(tabPane.getSelectionModel().getSelectedItem(), fileOperations.getFile().toString());
+        textArea.setText(fileOperations.getFile().toString());
+
     }
 
 }
